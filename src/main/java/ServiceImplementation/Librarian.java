@@ -26,18 +26,7 @@ public class Librarian extends Person implements LibraryServices {
 
     public static void setPriorityQueue(Queue<Person> priorityQueue) {Librarian.priorityQueue = priorityQueue;}
 
-    private  static  Queue<Person> priorityQueue = new PriorityQueue<>(new Comparator<Person>() {
-        @Override
-        public int compare(Person one, Person two) {
-            if(one.getPriority() > two.getPriority()){
-                return -1;
-            }else if(one.getPriority() < two.getPriority()){
-                return 1;
-            }else{
-                return 0;
-            }
-        }
-    });
+    private  static  Queue<Person> priorityQueue = new PriorityQueue<>((one, two) -> Integer.compare(two.getPriority(), one.getPriority()));
 
     public Librarian(String name, Position position){
         super(name, position);
@@ -56,12 +45,8 @@ public class Librarian extends Person implements LibraryServices {
 
     private final Consumer<Person> registerUser2 = person -> {
         if(person != null){
-            if(!personQueue.contains(person)){
-                personQueue.add(person);
-            }
-            if(!priorityQueue.contains(person)){
-                priorityQueue.add(person);
-            }
+            if(!personQueue.contains(person)){personQueue.add(person);}
+            if(!priorityQueue.contains(person)){priorityQueue.add(person);}
             count++;
         }
     };
@@ -90,15 +75,6 @@ public class Librarian extends Person implements LibraryServices {
         } else return "please register with the Library first!!!";
 
     }
-
-//    public LendBook lendBookPriority = (book) -> {
-//        if(!priorityQueue.isEmpty() ) {
-//            final Person person = priorityQueue.remove();
-//            return process(person,book);
-//        } else return "please register with the Library first!!!";
-//    };
-
-
     @Override
     public String lendBookToUserByFifo( Book book) throws LibraryException {
         if(!personQueue.isEmpty() ) {
@@ -107,11 +83,20 @@ public class Librarian extends Person implements LibraryServices {
         } else return "please register with the Library first!!!";
 
     }
+
+////    The return type of ths method is the name of the functional interface
+//    public LendBook lendBookPriority = (book) -> {
+//        if(!priorityQueue.isEmpty() ) {
+//            final Person person = priorityQueue.remove();
+//            return process(person,book);
+//        } else return "please register with the Library first!!!";
+//    };
+
     public String process(Person person,  Book book){
-        if(Library.getAvailableBooks().containsKey(book.getBookTitle())){ //check if book is in the library, check if the book has not been borrowed,
-            return  updateBookRecords(person,book);
-        } else return
-                "Sorry "+person.getFirstName()+ " the book, "+book.getBookTitle()+ " is not in our Library yet";
+        //check if book is in the library, check if the book has not been borrowed,
+        return Library.getAvailableBooks().containsKey(book.getBookTitle()) ?
+                updateBookRecords(person, book) : "Sorry "
+                + person.getFirstName() + " the book, " + book.getBookTitle() + " is not in our Library yet";
     }
 
     private String updateBookRecords(Person person, Book book){

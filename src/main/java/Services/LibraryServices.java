@@ -10,4 +10,6 @@ public interface LibraryServices  {
     String lendBookToUserByPriority(Book book) throws LibraryException;
     String lendBookToUserByFifo(Book book) throws LibraryException;
     String collectBookFromUser(Person person, String bookTitle) ;
+
+
 }
