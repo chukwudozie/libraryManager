@@ -40,25 +40,11 @@ public class Librarian extends Person implements LibraryServices {
     public void registerUser(Person person) {
         registerUser2.accept(person);
     }
-
-//    Predicate<Person>che
-
-    private final Consumer<Person> registerUser2 = person -> {
+    Consumer<Person> registerUser2 = person -> {
         if(person != null){
             if(!personQueue.contains(person)){personQueue.add(person);}
             if(!priorityQueue.contains(person)){priorityQueue.add(person);}
             count++;
-        }
-    };
-
-    Function<Book, String> addBookToLibrary = book -> {
-        if(Library.getAvailableBooks().containsKey(book.getBookTitle())) {
-            int old = Library.getAvailableBooks().get(book.getBookTitle());
-            Library.getAvailableBooks().put(book.getBookTitle(),old + book.getNumberOfBooks());
-            return book.getNumberOfBooks()+" new " +book.getBookTitle()+" added.";
-        }else{
-            Library.getAvailableBooks().put(book.getBookTitle(), book.getNumberOfBooks());
-            return book.getNumberOfBooks()+" copy of "+book.getBookTitle()+ " added successfully";
         }
     };
 
@@ -69,38 +55,38 @@ public class Librarian extends Person implements LibraryServices {
 
     @Override
     public String lendBookToUserByPriority(Book book) throws LibraryException {
+        return lendByPriority.apply(book);
+    }
+    Function<Book,String> lendByPriority = (book -> {
         if(!priorityQueue.isEmpty() ) {
             final Person person = priorityQueue.remove();
             return process(person,book);
         } else return "please register with the Library first!!!";
+    });
 
-    }
     @Override
     public String lendBookToUserByFifo( Book book) throws LibraryException {
+        return lendByFifo.apply(book);
+    }
+    Function<Book,String> lendByFifo = (book -> {
         if(!personQueue.isEmpty() ) {
             final Person person = personQueue.remove();
             return process(person,book);
         } else return "please register with the Library first!!!";
+    });
 
-    }
 
-////    The return type of ths method is the name of the functional interface
-//    public LendBook lendBookPriority = (book) -> {
-//        if(!priorityQueue.isEmpty() ) {
-//            final Person person = priorityQueue.remove();
-//            return process(person,book);
-//        } else return "please register with the Library first!!!";
-//    };
 
-    public String process(Person person,  Book book){
+    private String process(Person person,  Book book){
         //check if book is in the library, check if the book has not been borrowed,
         return Library.getAvailableBooks().containsKey(book.getBookTitle()) ?
-                updateBookRecords(person, book) : "Sorry "
-                + person.getFirstName() + " the book, " + book.getBookTitle() + " is not in our Library yet";
+                updateBookRecords(person, book) :
+                "Sorry " + person.getFirstName() + " the book, " + book.getBookTitle() + " is not in our Library yet";
     }
 
     private String updateBookRecords(Person person, Book book){
-        Integer copiesAvailable = Library.getAvailableBooks().get(book.getBookTitle());//give the book to the user and update his set of books
+        Integer copiesAvailable = Library.getAvailableBooks().get(book.getBookTitle());
+        //give the book to the user and update his set of books
         if(copiesAvailable != 0){
             Set<String> borrowedBooks = new HashSet<>();
             borrowedBooks.add(book.getBookTitle());

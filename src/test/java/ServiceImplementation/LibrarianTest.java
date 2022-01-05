@@ -37,9 +37,7 @@ class LibrarianTest {
         User user = new User("ME",Position.TEACHER);
         checkException.registerUser(user);
         Library.getAvailableBooks().put(book1.getBookTitle(),book1.getNumberOfBooks());
-        Throwable exception = assertThrows(LibraryException.class, () ->{
-            checkException.lendBookToUserByPriority(book1);
-        });
+        Throwable exception = assertThrows(LibraryException.class, () -> checkException.lendBookToUserByPriority(book1));
         assertEquals("No copy of the book "+book1.getBookTitle()+" in the library",exception.getMessage());
     }
 
@@ -50,9 +48,7 @@ class LibrarianTest {
         User user = new User("ME",Position.TEACHER);
         checkException.registerUser(user);
         Library.getAvailableBooks().put(book1.getBookTitle(),book1.getNumberOfBooks());
-        Throwable exception = assertThrows(LibraryException.class, () ->{
-            checkException.lendBookToUserByFifo(book1);
-        });
+        Throwable exception = assertThrows(LibraryException.class, () -> checkException.lendBookToUserByFifo(book1));
         assertEquals("No copy of the book "+book1.getBookTitle()+" in the library",exception.getMessage());
     }
 

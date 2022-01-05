@@ -33,6 +33,7 @@ public class App {
 
 
         userList.stream().forEach(librarian::registerUser);
+
         System.out.println(Librarian.getPriorityQueue().toString());
 
 
@@ -42,13 +43,19 @@ public class App {
             try {System.out.println(librarian.lendBookToUserByPriority(book1));
             }catch (LibraryException e){System.out.println(e);}
         });
+
 //        userList.stream().forEach(person -> {
 //            try {System.out.println(librarian.lendBookToUserByFifo(book2));
 //            }catch (LibraryException e){System.out.println(e);}
 //        });
 
+        System.out.println("\n\n");
+
+        userList.stream().forEach(librarian::registerUser);
+        System.out.println(Librarian.getPriorityQueue().toString());
 
         System.out.println("\nRemaining Books: " + Library.getAvailableBooks());
+
 
     }
 }
